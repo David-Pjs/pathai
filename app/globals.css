@@ -1,26 +1,160 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── PathAI design tokens — single source of truth (see DESIGN.md) ── */
+@theme {
+  /* Brand green carries the surface */
+  --color-green:       #15994A;
+  --color-green-edge:  #0C6E34;
+  --color-green-deep:  #0A5F2D;
+  --color-green-tint:  #E6F4EB;
+
+  /* Danger — real stakes only */
+  --color-danger:      #E03A2E;
+  --color-danger-tint: #FCEAE8;
+
+  /* Ink + neutrals, faintly warmed toward green */
+  --color-ink:         #16211B;
+  --color-paper:       #FBFCFB;
+  --color-paper-2:     #F2F6F2;
+  --color-line:        #DCE4DE;
+  --color-muted:       #6E7A73;
+  --color-faint:       #A3ADA6;
+
+  --font-sans: var(--font-nunito, ui-sans-serif, sans-serif);
+  --font-mono: var(--font-dm-mono, ui-monospace, monospace);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur: 280ms;
+  --dur-slow: 520ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── The signature chunky button ── */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 16px;
+  padding: 14px 24px;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  transition: transform 60ms linear, filter 120ms ease;
+}
+.btn-primary {
+  background: var(--color-green);
+  color: var(--color-paper);
+  box-shadow: 0 4px 0 var(--color-green-edge);
+}
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary:active { transform: translateY(4px); box-shadow: 0 0 0 var(--color-green-edge); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 2px solid var(--color-line);
+  box-shadow: 0 4px 0 var(--color-line);
+}
+.btn-ghost:hover { border-color: var(--color-green); box-shadow: 0 4px 0 var(--color-green-tint); }
+.btn-ghost:active { transform: translateY(4px); box-shadow: 0 0 0 var(--color-line); }
+
+.btn:disabled {
+  filter: grayscale(0.4) opacity(0.55);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* ── Focus ring for everything interactive ── */
+:where(a, button, input, [role="button"]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-green) 35%, transparent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ── Fluid type helpers ── */
+.t-display {
+  font-size: clamp(2.4rem, 8vw, 3.75rem);
+  line-height: 1.04;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+.t-h1 {
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.t-label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Safe area for notched phones ── */
+.pb-safe { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+
+/* ── Motion primitives ── */
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+}
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-green) 40%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-green) 0%, transparent); }
+}
+
+/* "ringing" pulse — an expanding ring that fades, like a call connecting */
+@keyframes ring-pulse {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  70%  { transform: scale(1.4);  opacity: 0; }
+  100% { transform: scale(1.4);  opacity: 0; }
+}
+.animate-ring-pulse { animation: ring-pulse 1.9s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+
+/* concentric ringing rings for the interview "connecting" screen */
+@keyframes ring-expand {
+  0%   { transform: scale(0.7); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ── Print: show only the CV document ── */
+@media print {
+  body * { visibility: hidden; }
+  #cv-doc, #cv-doc * { visibility: visible; }
+  #cv-doc { position: absolute; left: 0; top: 0; width: 100%; }
+  .no-print { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
