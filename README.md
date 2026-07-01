@@ -85,8 +85,6 @@ lib/
     system-prompt.ts   Shared prompt scaffolding
 components/
   Logo.tsx
-PRODUCT.md             Product context (users, brand, strategy)
-DESIGN.md              Design system (tokens, components, motion)
 ```
 
 ## Running locally
