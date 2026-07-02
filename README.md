@@ -20,6 +20,8 @@ Roughly 15 million young Nigerians enter the job market every year, and for firs
 
 This is a training and access gap, not a talent gap. PathAI is built to close it.
 
+The person it is built for is a first-generation Nigerian graduate or school-leaver, roughly 17 to 28, on a mid-range Android with metered data, who is job-hunting or trying to choose a direction and has nobody in their family who has done formal white-collar hiring. It also serves NYSC corps members, bootcamp graduates (ALX, AltSchool, 3MTT, HNG), and anyone trying to relocate or go remote. It assumes no career-services office, no mentor, and no money to spare. That is why onboarding starts from what the person likes, not from a job title they may not even have yet.
+
 ## What it does
 
 PathAI is four connected tools, each powered by a hand-built knowledge base of how **14 real Nigerian companies** actually hire (`lib/context/companies.ts`).
@@ -37,12 +39,6 @@ PathAI is four connected tools, each powered by a hand-built knowledge base of h
 - **Grounded in real Nigerian hiring data**, not generic advice. The moat is `lib/context/`: real processes, requirements, questions, and "what kills you" for 14 companies.
 - **Starts from what you love**, not from a job title. It works for a confused secondary-school student, a graduate, a freelancer, or someone trying to relocate.
 - **Voice-first and low-bandwidth** by design, for users on mid-range Androids and metered data.
-
-## Who it is for
-
-The primary user is a **first-generation Nigerian graduate or school-leaver, roughly 17 to 28, on a mid-range Android with metered data**, who is job-hunting or trying to choose a direction and has nobody in their family who has done formal white-collar hiring. Secondary users: NYSC corps members, bootcamp graduates (ALX, AltSchool, 3MTT, HNG), and anyone trying to relocate or go remote.
-
-The product assumes no career-services office, no mentor, and no money to spare. That is why onboarding starts from what the person likes, not from a job title they may not even have yet.
 
 ## How AI is core, not bolted on
 
@@ -86,26 +82,6 @@ lib/
 components/
   Logo.tsx
 ```
-
-## Running locally
-
-```bash
-npm install
-cp .env.example .env.local   # then fill in your keys
-npm run dev
-```
-
-Open http://localhost:3000.
-
-### Environment variables (`.env.local`)
-
-```
-LLM_PROVIDER=deepseek          # or "groq"
-DEEPSEEK_API_KEY=sk-...        # required if LLM_PROVIDER=deepseek
-GROQ_API_KEY=gsk_...           # required for speech-to-text (Whisper), also LLM if provider=groq
-```
-
-A copy-ready template lives in [`.env.example`](.env.example).
 
 ## Real-world feasibility in Nigeria
 
