@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       system: systemPrompt,
       messages: chatMessages,
       temperature: 0.7,
-      maxTokens: 900,
+      maxTokens: 1400,
     })
 
     if (!parsed) {

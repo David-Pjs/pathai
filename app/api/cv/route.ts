@@ -15,12 +15,13 @@ Rules:
 - Use strong action verbs (recorded, managed, served, built, reconciled). Strength comes from framing real work well, not from inventing achievements.
 - Nigerian format: one page, clean, ATS-friendly. Lead with a sharp professional summary tailored to the target. Include NYSC status and class of degree where relevant.
 - No fluff, no clichés ("hardworking team player"), no lies.
+- Never use em dashes (the "—" character) in the summary, bullets, headline, or any prose. Use a plain hyphen only for date ranges (e.g. "2023-2024"). For a headline separator use a comma or slash, not a dash.
 - Tailor the summary and the ordering of skills to the target role and, if given, what the target company actually values.
 
 Output a SINGLE JSON object, nothing else:
 {
   "fullName": "",
-  "headline": "target role / professional title, e.g. 'Graduate Trainee — Banking & Finance'",
+  "headline": "target role / professional title, e.g. 'Graduate Trainee, Banking & Finance'",
   "contact": { "phone": "", "email": "", "location": "", "linkedin": "" },
   "summary": "2 to 3 sentence professional summary tailored to the target",
   "experience": [{ "role": "", "org": "", "period": "", "location": "", "bullets": ["achievement-oriented bullet", "..."] }],

@@ -86,26 +86,33 @@ function parseLoose<T>(raw: string): T | null {
 }
 
 /**
+ * Per-provider order of json_object mode vs plain mode, most-reliable first.
+ * This matters: a structured task (interview scores) that comes back as prose
+ * fails to parse and the UI shows a scoreless fallback.
+ *   - Groq (llama-3.3) honors json_object reliably → lead with JSON mode so the
+ *     model is FORCED to emit parseable JSON. Plain mode lets it reply
+ *     conversationally, which is what made scores intermittently vanish.
+ *   - DeepSeek's json_object mode intermittently returns an empty body → lead
+ *     with plain completions + loose extraction, keep JSON mode as a backup.
+ */
+function modeOrder(provider: ProviderId): boolean[] {
+  return provider === "deepseek" ? [false, false, true] : [true, false, false]
+}
+
+/**
  * Returns parsed JSON, with a robust failover cascade so the UI never shows a
  * "could not parse" fallback in practice:
- *   1) primary provider, JSON mode  (x2)
- *   2) primary provider, plain mode  (x1)   — JSON mode sometimes returns empty
- *   3) fallback provider, JSON mode  (x2)
+ *   1) primary provider, best mode first, then the other mode  (x3)
+ *   2) fallback provider, best mode first                       (x2)
  * Any throw (timeout, 429, network) is caught and moves to the next attempt.
  */
 export async function chatJSON<T>(opts: Omit<ChatOptions, "json" | "providerId">): Promise<T | null> {
   const primary = primaryId()
   const fallback = otherId(primary)
 
-  // Plain mode FIRST: DeepSeek's json_object mode intermittently returns an empty
-  // body, so we lead with plain completions (reliable) + loose extraction, and only
-  // use json mode / the other provider as deeper backups.
   const plan: { provider: ProviderId; json: boolean }[] = [
-    { provider: primary, json: false },
-    { provider: primary, json: false },
-    { provider: primary, json: true },
-    { provider: fallback, json: false },
-    { provider: fallback, json: true },
+    ...modeOrder(primary).map((json) => ({ provider: primary, json })),
+    ...modeOrder(fallback).slice(0, 2).map((json) => ({ provider: fallback, json })),
   ]
 
   for (const step of plan) {
